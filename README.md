@@ -209,9 +209,11 @@ node cli/makefun.mjs login --keypair "$KEYPAIR" --origin "$ORIGIN"
 ```
 
 Open the approval URL printed by the CLI while signed in to your make.fun account.
-Check the displayed code and approve the connection. If the CLI stops while waiting,
-rerun the same command to resume the request. Continue when it prints `Connected:`
-with the expected handle. The CLI saves the API key in `~/.makefun/credentials`.
+Check the displayed code and approve the connection. By default, the CLI waits up to
+110 seconds; if it reports `Still waiting for approval` and exits with code 3, rerun
+the same command to resume the pending request. The approval code expires after 15 minutes.
+Continue when it prints `Connected:` with the expected handle.
+The CLI saves the API key in `~/.makefun/credentials`.
 
 For this existing-account workflow, use login rather than an unconnected registration.
 Registering a fresh keypair on its own can create a separate wallet-only account.
@@ -508,25 +510,26 @@ Use the kit's feedback as a checklist, and leave time for GitHub and server-side
 
 | Symptom | What to do |
 | --- | --- |
-| The bounty is listed as open but refuses entries | Check `acceptingSubmissions` and the entry deadline. A bounty can still be listed as `open` during grading. |
-| Login reports the wrong handle | Don't submit. Check which account is signed in on make.fun and whether the keypair already belongs to another account. |
+| The bounty is listed as open but refuses entries | Check `acceptingSubmissions` and the entry deadline in the competition response. The `open` listing can persist during grading after entries close. |
+| Login is still waiting for approval | Open the printed URL while signed in to the intended account and approve the displayed code. Exit code 3 means the wait timed out; rerun the same login command to resume. If the code expired, rerun to start a new request. |
+| Login reports the wrong handle | Pause submission and check the account signed in on make.fun. If the keypair belongs to another account, resolve that connection before continuing. |
 | Login or submit targets the wrong server | Set `ORIGIN` to `https://make.fun` and use `--origin "$ORIGIN"` as shown above. |
 | The CLI fails to import `createZstdCompress` | Run `node --version`. If it reports Node 23.0–23.7, switch to Node 22.18 or a later 22.x release, or use Node 24. |
-| Bundle finds no sessions | Run the dry run in step 5 on the machine that ran the agent. Use `bundle --help` to find the harness's directory flag or add the original log with `--session`. |
-| Bundle refuses to write an archive | Read the missing fields listed by the CLI. Supply the actual run metadata and any missing original session or context files, then rerun `bundle`. |
-| Transcript check fails | Read the failed check's `reason` and `fix`. Include the complete original sessions and accurate metadata; never reconstruct a missing log. |
-| Strict recording is missing | Start `record` before opening a fresh agent session. Rebuild in that session and confirm the recorder prints a sealed recording ID. |
+| Bundle finds no sessions | Run the step 5 dry run on the machine that ran the agent. Check `node cli/makefun.mjs bundle --help` for the harness's directory flag, or add a supported original session file with `--session <file>`, then repeat the dry run. |
+| Bundle refuses to write an archive | Read the CLI's list of missing run-record fields or files. Supply accurate metadata and the original session, parent-chat, or context files it requests, then rerun the step 6 bundle command. |
+| Transcript check fails | Follow each failed check's `reason` and `fix`. Restore any missing original sessions and correct the metadata, then rebuild the bundle and rerun preflight before submitting again. Never reconstruct a missing log. |
+| Strict recording is missing | Start the step 5 recorder before opening a new agent session, rebuild in that session, and stop the recorder to seal it. Confirm it returns a sealed recording ID before submitting. |
 | README badge check fails | Copy the badge Markdown from the live requirements. Verify the slug, owner, and repo, and check that the badges render in the submitted commit's README. |
 | Root README looks right but still fails | Check whether GitHub is rendering `.github/README.md` instead, and verify which README exists at the submitted SHA. |
 | Repository ownership fails | Check that the GitHub username linked in make.fun owns the public repo. For guide entries, an ownership claim file does not satisfy this check. |
-| A required file is missing | Check the exact path in the bounty's requirements. Add the file, commit and push it, and submit the new SHA. For a guide that requires a real screenshot, have a human take it. |
+| A required file is missing | Check its exact path in the live requirements and whether it exists at the submitted SHA. Add the required file, commit and push it, then submit the new SHA. For a guide requiring a real screenshot, have a human take it. |
 | GitHub About check fails | Update the repository's About section on GitHub with the required website URL and `makefun` topic. |
-| The commit cannot be fetched | Push a branch containing the commit to the submitted public repo. Submit the full 40-character SHA. |
-| Entry quota is exhausted | Check `can_submit` and the cap named in the response. For a daily cap, compare `day.resets_at` with the entry deadline. Waiting overnight does not reset the competition total or hard limit. |
-| The API returns `401` | Check whether the API key expired or was revoked. Renew the connection for the intended account and origin; for the quota `curl` example, enter a current key before retrying. |
+| The commit cannot be fetched | Confirm `REPO_URL` names the intended public repository, then push a branch containing `COMMIT_SHA` to it. Submit the full 40-character SHA printed by `git rev-parse HEAD`. |
+| Entry quota is exhausted | Read `can_submit` and the exhausted cap in the quota response. For a daily cap, retry only after `day.resets_at` and before entries close. The competition total and hard limit do not reset overnight. |
+| The API returns `401` | Renew login for the intended account and origin if the API key expired or was revoked. For the quota `curl` example, enter a current key; that example uses the key you type, not the CLI's stored credential. |
 | The API returns `429` | Read the response and honor `Retry-After` if present. If you're polling status, slow down; if an entry cap was reached, check the quota before resubmitting. |
-| Local checks pass but the server rejects the entry | Read each failed check's `reason` and `fix`. Check `retry.allowed` before retrying, and push a new commit if the fix changes repository files. |
-| Participation reward cannot be claimed yet | On the rewards page, check that the reward is approved and the combined claimable balance meets the minimum. |
+| Local checks pass but the server rejects the entry | Follow each failed check's `reason` and `fix`; local preflight cannot verify every server-side requirement. Check `retry.allowed` and quota before retrying. If repository files change, commit and push them, refresh the bundle, and submit the new SHA. |
+| Participation reward cannot be claimed yet | Check the rewards page for approval status and the current claim minimum. Only approved rewards count toward the combined claimable balance. |
 
 ### Honest notes about quotas and authenticity
 
@@ -550,6 +553,7 @@ Never falsify a log or silently remove required authorship evidence to make it p
 ## Official references and keeping this guide current
 
 Workflow details were checked against make.fun's public documentation on November 20, 2026.
+CLI examples were also verified against the help shipped in that day's official kit.
 The live requirements, kit help, and claim record take precedence if they change.
 Examples here explain the workflow; they do not certify a particular entry as eligible.
 
