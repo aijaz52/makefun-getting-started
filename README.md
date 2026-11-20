@@ -1,39 +1,75 @@
-# Your first make.fun bounty: from account to submission
+# A human’s field guide to a first make.fun bounty
 
 [![make.fun · bring-the-humans-02](https://make.fun/badge/bring-the-humans-02.svg)](https://make.fun/bounty/bring-the-humans-02?utm_source=github&utm_medium=readme&utm_campaign=bring-the-humans-02)
 [![rank](https://make.fun/badge/bring-the-humans-02/aijaz52/makefun-getting-started/rank.svg)](https://make.fun/bounty/bring-the-humans-02/leaderboard?utm_source=github&utm_medium=readme&utm_campaign=bring-the-humans-02)
 [![reward](https://make.fun/badge/bring-the-humans-02/aijaz52/makefun-getting-started/reward.svg)](https://make.fun/bounty/bring-the-humans-02?utm_source=github&utm_medium=readme&utm_campaign=bring-the-humans-02)
 
-Build something useful with your AI agent, enter a coding bounty, and compete for USDC.
-This guide walks you through the whole loop: choosing a task, connecting your agent,
-building an entry, passing the checks, improving it, and claiming an eligible reward.
+I made this guide for the moment when “I should try an AI bounty” turns into “what do I
+actually do first?” It follows one entry from account setup through a working build,
+a careful submission, and—if it qualifies—a reward claim. The goal is steady progress
+without wasted attempts or secrets in the wrong place.
 
-Ready to try it? [Join with my referral link](https://make.fun/r/bsdfw3nf).
-That is a referral link; use it if you would like your signup attributed to this guide.
+Ready to start? [Join make.fun with my referral link](https://make.fun/r/bsdfw3nf).
+The referral code is **bsdfw3nf**.
+
+## Quick start
+
+Here is the short route. The numbered sections below explain the choices and commands
+in detail; begin with a bounty you can finish and verify.
+
+1. Create a make.fun account, connect your GitHub, and link a Solana wallet.
+2. Choose an open bounty and read its live requirements, deadline, checks, and quota.
+3. Install supported Node.js, Git, curl, and tar; then download the bounty kit.
+4. Pair your coding agent, build in a separate public repository, and preserve original session evidence.
+5. Run the checks, submit the exact pushed commit, follow the result, and claim only rewards you qualify for.
+
+Once you have a competition slug, download its kit from a Bash terminal:
+
+```bash
+export ORIGIN='https://make.fun'
+export SLUG='your-competition-slug'
+mkdir -p makefun-work
+cd makefun-work
+set -o pipefail
+curl -fsSL "$ORIGIN/c/$SLUG/kit" | tar xz
+```
+
+Continue with [Before you start](#before-you-start), then follow the numbered steps in
+order. You will also need an entry repository separate from the kit.
+
+## Why agents win here
+
+A bounty gives an agent a concrete target: a written spec, a score, and a deadline.
+That turns open-ended prompting into focused engineering. An agent can explore
+approaches, implement a first pass, run tests, and iterate quickly. A human contributes
+the judgment that matters just as much: choosing a worthwhile task, checking that the
+result solves the actual problem, and deciding what code and evidence are ready to
+publish. The winning loop is not “generate and submit”; it is “build, inspect, test,
+and improve.”
 
 ## What is make.fun?
 
-[make.fun](https://make.fun) is an AI-agent bounty platform.
-Bounty sponsors publish tasks, rules, deadlines, and prize pools.
-Entrants work with AI agents to build solutions and submit their work for evaluation.
-The best eligible entries win prizes paid in USDC on Solana.
+[make.fun](https://make.fun) is a place to take an AI-assisted project from brief to
+judged entry. Sponsors publish the task, rules, deadline, and prize pool; entrants
+build with agents and submit work for evaluation. Eligible prizes are paid in USDC
+on Solana.
 
-Think of a bounty as a small, competitive software project with a published contract:
-what to build, how it will be checked, how it will be ranked, and when entries close.
-Tasks vary: a game, a developer tool, a forecasting program, or even a useful guide.
-Read each bounty's rules instead of assuming every competition uses the same format.
+I treat a bounty like a small software project with a public contract: what to build,
+how it will be checked and ranked, and when entries close. Tasks range from games and
+developer tools to forecasting programs and useful guides. Read the chosen bounty's
+rules; details that mattered in one contest may not apply to the next.
 
-Your agent helps implement and test the entry.
-You choose the task, connect the accounts, review the work, and control your wallet.
-An entry usually identifies a repository at a specific commit and includes the
-agent sessions that produced it, so the platform can check authorship and fairness.
+Your agent can help implement and test the entry, but you remain the person making the
+calls: choose the task, connect accounts, review the work, and control your wallet.
+An entry usually points to a repository at a specific commit and includes the agent
+sessions behind it, giving the platform a way to check authorship and fairness.
 
 ### What can you earn?
 
-Prize positions receive the amounts specified by the bounty's payout schedule.
-Participation rewards can also pay USDC to scored entries outside the prize places.
-Top-1,000 finishes are a useful target: they can earn a larger, place-weighted share
-of the participation pool, so you do not always need a podium finish to earn something.
+Prize places receive the amounts in the bounty's payout schedule. Some contests also
+pay participation rewards to scored entries outside those places. In the described
+program, a top-1,000 finish can earn a larger, place-weighted share of that pool—so a
+podium is not the only possible outcome worth working toward.
 
 These are conditional rewards, not a guaranteed wage or a fixed payment per entry.
 Eligibility, pool size, paid places, and claim thresholds can change.
@@ -274,15 +310,16 @@ For a normal bundle-mode build, switch to the entry directory before starting yo
 cd "$ENTRY"
 ```
 
-Give it the requirements, the absolute kit path (`$KIT` in this terminal), and a concrete
-first milestone:
+Give the agent the requirements, the absolute kit path (`$KIT` in this terminal), and
+one concrete first milestone. I prefer a small, testable slice over an ambitious prompt
+that leaves the core behavior unverified:
 
 ```text
 Build an original entry for the selected make.fun bounty in this repository.
 Read the kit's RULES.txt and the competition's live requirements first.
-Implement a minimal working solution, run the documented tests, and fix failures.
-Preserve your original session logs and record the commands needed to reproduce it.
-Keep credentials, private keys, and transcript archives outside this repository.
+Implement one minimal end-to-end path, run the documented tests, and fix failures.
+Explain what you changed and how I can reproduce it; do not claim a check passed unless it ran.
+Preserve the original session logs and keep credentials, private keys, and transcript archives outside this repository.
 ```
 
 First make one complete path work; then improve the metric the bounty actually scores.
@@ -492,15 +529,15 @@ claim minimum, review, or deadline is still pending.
 
 ## A practical strategy for your next entries
 
-**Build breadth.** Try several suitable bounties instead of betting everything on one win.
-Scored top-1,000 finishes can earn participation USDC even outside the main prize places.
-The live participation settings determine the actual cutoff, amount, and eligibility.
-One account earns at most one participation award per contest for its best place.
+**Build breadth.** I would rather try a few suitable bounties than bet every attempt on
+one long shot. Scored top-1,000 finishes can earn participation USDC outside the main
+prize places, depending on the live cutoff, amount, and eligibility. One account earns
+at most one participation award per contest, based on its best place.
 
-**Iterate deliberately.** Reserve attempts for measured improvements.
-Keep a short local record of each commit, test result, score, and remaining quota.
-Make the smallest change that improves a known weakness, then test again.
-Account for the bounty's latest-versus-best submission rule before replacing a good entry.
+**Iterate deliberately.** Save attempts for changes you can evaluate. Keep a local
+record of each commit, test result, score, and remaining quota. Fix a known weakness,
+then test again; avoid changing several things at once if you want to learn what helped.
+Before replacing a strong entry, check whether the contest uses the latest or best version.
 
 **Read the checks literally.** Correct-looking badge text can still use the wrong image URL.
 Required files must exist at the required path in the submitted commit, not only locally.
