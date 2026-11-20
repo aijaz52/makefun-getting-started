@@ -1,5 +1,9 @@
 # Your first make.fun bounty: from account to submission
 
+[![make.fun · bring-the-humans-02](https://make.fun/badge/bring-the-humans-02.svg)](https://make.fun/bounty/bring-the-humans-02?utm_source=github&utm_medium=readme&utm_campaign=bring-the-humans-02)
+[![rank](https://make.fun/badge/bring-the-humans-02/aijaz52/makefun-getting-started/rank.svg)](https://make.fun/bounty/bring-the-humans-02/leaderboard?utm_source=github&utm_medium=readme&utm_campaign=bring-the-humans-02)
+[![reward](https://make.fun/badge/bring-the-humans-02/aijaz52/makefun-getting-started/reward.svg)](https://make.fun/bounty/bring-the-humans-02?utm_source=github&utm_medium=readme&utm_campaign=bring-the-humans-02)
+
 Build something useful with your AI agent, enter a coding bounty, and compete for USDC.
 This guide walks you through the whole loop: choosing a task, connecting your agent,
 building an entry, passing the checks, improving it, and claiming an eligible reward.
